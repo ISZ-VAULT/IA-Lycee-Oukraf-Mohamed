@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="fr" data-theme="dark">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Intelligence Artificielle — Lycée Oukraf Mohamed</title>
+<meta name="description" content="Site pédagogique sur l'intelligence artificielle : cours, encyclopédie, quiz, glossaire et assistant ISZ AI. Lycée Oukraf Mohamed.">
+<meta name="theme-color" content="#0B132B">
+<!-- La classe « js » n'est ajoutée que si le script s'exécute :
+     sans JavaScript, tout le contenu reste visible. -->
+<script>document.documentElement.classList.add("js");</script>
+<!-- Feuille de style locale (aucune bibliothèque externe) -->
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============================================================
+     EN-TÊTE : LOGO ISZ + NAVIGATION (7 LIENS)
+     ============================================================ -->
+<header class="hd">
+  <a class="brand" href="#accueil" aria-label="Accueil ISZ">
+    <span class="logo" aria-hidden="true">ISZ</span>
+    <span>
+      <b>Lycée Oukraf Mohamed</b>
+      <span>Intelligence Artificielle</span>
+    </span>
+  </a>
+
+  <nav class="nav" id="nav" aria-label="Navigation principale">
+    <a href="#accueil" class="on">Accueil</a>
+    <a href="#cours">Cours</a>
+    <a href="#encyclopedie">Encyclopédie</a>
+    <a href="#quiz">Quiz</a>
+    <a href="#glossaire">Glossaire</a>
+    <a href="#iszai">ISZ AI</a>
+    <a href="#equipe">Équipe</a>
+  </nav>
+
+  <div class="hd-actions">
+    <button class="icon-btn" id="sBtn" aria-label="Rechercher" aria-expanded="false">
+      <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    </button>
+    <button class="icon-btn" id="tBtn" aria-label="Changer de thème">
+      <svg viewBox="0 0 24 24" id="tIcon"><path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/></svg>
+    </button>
+    <button class="icon-btn" id="pBtn" aria-label="Mode présentation">
+      <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M12 17v3M8 21h8"/></svg>
+    </button>
+    <button class="icon-btn" id="burger" aria-label="Ouvrir le menu" aria-expanded="false">
+      <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+    </button>
+  </div>
+</header>
+
+<!-- Recherche globale -->
+<div class="search-wrap" id="sWrap">
+  <div class="search-box">
+    <input type="search" id="sInput" placeholder="Rechercher un mot-clé : réseau de neurones, Turing, éthique…" autocomplete="off" aria-label="Rechercher dans le site">
+    <ul id="sResults" role="list"></ul>
+  </div>
+</div>
+
+<main>
+<!-- ============================================================
+     HERO
+     ============================================================ -->
+<section class="hero" id="accueil">
+  <canvas id="heroCanvas" aria-hidden="true"></canvas>
+  <div class="hero-in">
+    <span class="pill"><i></i> Cours de culture numérique</span>
+    <h1>L'Intelligence <span>Artificielle</span><br>expliquée simplement.</h1>
+    <p class="typed-line"><span id="typed"></span></p>
+    <p class="lead">Des origines de l'IA générative aux questions éthiques : un cours clair, illustré et interactif pour les élèves du Lycée Oukraf Mohamed.</p>
+    <div class="cta">
+      <a class="btn btn-primary" href="#cours">
+        Commencer le cours
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <a class="btn btn-ghost" href="#iszai">Interroger ISZ AI</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><b data-count="70" data-suffix="+">0</b><span>ans de recherche</span></div>
+      <div class="stat"><b data-count="1956">0</b><span>naissance du terme</span></div>
+      <div class="stat"><b data-count="12">0</b><span>chapitres de cours</span></div>
+      <div class="stat"><b data-count="100" data-suffix="%">0</b><span>accessible hors ligne</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     COURS : DEFINITION, HISTOIRE, TYPES, APPLICATIONS, ETHIQUE
+     ============================================================ -->
+<section id="cours">
+  <div class="wrap">
+    <h2 class="rv"><span class="ln"></span>Le cours en cinq étapes</h2>
+    <p class="mut rv">Comprendre ce qu'est l'IA, d'où elle vient, ce qu'elle sait faire et où sont ses limites.</p>
+
+    <!-- 1. Définition -->
+    <div class="rv" style="margin-bottom:52px">
+      <h3 style="font-size:1.25rem">1. Définition</h3>
+      <p class="mut">Une machine qui reproduit des tâches demandant normalement l'intelligence humaine.</p>
+      <div class="grid">
+        <article class="card">
+          <h3>Intelligence artificielle</h3>
+          <p>Ensemble de techniques permettant à une machine d'accomplir des tâches cognitives : percevoir, raisonner, apprendre, décider.</p>
+          <span class="tag">Notion clé</span>
+        </article>
+        <article class="card">
+          <h3>Algorithme</h3>
+          <p>Suite finie d'instructions qui transforme des données d'entrée en résultat. Tout programme, même simple, en est un.</p>
+          <span class="tag">Fondement</span>
+        </article>
+        <article class="card">
+          <h3>Apprentissage automatique</h3>
+          <p>Le programme n'est plus écrit règle par règle : il ajuste ses paramètres à partir d'exemples. C'est le machine learning.</p>
+          <span class="tag">Méthode</span>
+        </article>
+        <article class="card">
+          <h3>IA forte et IA faible</h3>
+          <p>L'IA faible est spécialisée dans une tâche unique. L'IA forte, capable de conscience et de polyvalence, reste hypothétique.</p>
+          <span class="tag">Distinction</span>
+        </article>
+      </div>
+    </div>
+
+    <!-- 2. Histoire -->
+    <div class="rv" style="margin-bottom:52px">
+      <h3 style="font-size:1.25rem">2. Une brève histoire</h3>
+      <p class="mut">Sept dates suffisent à suivre la trajectoire de la discipline.</p>
+      <ul class="tl">
+        <li><span class="yr">1950</span><p>Alan Turing propose son test : une machine peut-elle converser sans être distinguée d'un humain ?</p></li>
+        <li><span class="yr">1956</span><p>La conférence de Dartmouth lance officiellement l'expression « intelligence artificielle ».</p></li>
+        <li><span class="yr">1966</span><p>ELIZA simule un dialogue thérapeutique avec des règles textuelles très simples.</p></li>
+        <li><span class="yr">1997</span><p>Deep Blue bat le champion du monde d'échecs Garry Kasparov.</p></li>
+        <li><span class="yr">2012</span><p>AlexNet, un réseau de neurones profond, fait chuter le taux d'erreur en reconnaissance d'images.</p></li>
+        <li><span class="yr">2016</span><p>AlphaGo bat Lee Sedol au jeu de go, réputé intuitif et difficile à modéliser.</p></li>
+        <li><span class="yr">2022</span><p>Les grands modèles de langage rendent l'IA générative accessible au grand public.</p></li>
+      </ul>
+    </div>
+
+    <!-- 3. Types -->
+    <div class="rv" style="margin-bottom:52px">
+      <h3 style="font-size:1.25rem">3. Les grandes familles</h3>
+      <p class="mut">Quatre approches techniques à ne pas confondre.</p>
+      <div class="grid">
+        <article class="card">
+          <h3>Systèmes à règles</h3>
+          <p>Un expert écrit les règles « si… alors… ». Prévisible et explicable, mais rigide face à l'imprévu.</p>
+          <span class="tag">Symbolique</span>
+        </article>
+        <article class="card">
+          <h3>Apprentissage supervisé</h3>
+          <p>On fournit des exemples étiquetés et le modèle apprend à reproduire l'étiquette. Utile pour classer ou prédire.</p>
+          <span class="tag">Machine learning</span>
+        </article>
+        <article class="card">
+          <h3>Réseaux de neurones</h3>
+          <p>Des couches de calculs ajustent des millions de paramètres. C'est la base du deep learning moderne.</p>
+          <span class="tag">Deep learning</span>
+        </article>
+        <article class="card">
+          <h3>IA générative</h3>
+          <p>Le modèle produit du texte, une image ou du son à partir d'une consigne. Il prédit la suite la plus plausible.</p>
+          <span class="tag">Génératif</span>
+        </article>
+      </div>
+    </div>
+
+    <!-- 4. Applications -->
+    <div class="rv" style="margin-bottom:52px">
+      <h3 style="font-size:1.25rem">4. Usages au quotidien</h3>
+      <p class="mut">L'IA est déjà présente dans des gestes très ordinaires.</p>
+      <div class="grid">
+        <article class="card">
+          <h3>Santé</h3>
+          <p>Aide au repérage de lésions sur des images médicales. Le diagnostic final reste confié au médecin.</p>
+          <span class="tag">Diagnostic</span>
+        </article>
+        <article class="card">
+          <h3>Transport</h3>
+          <p>Aide au maintien de voie et freinage d'urgence. La conduite autonome complète reste très encadrée.</p>
+          <span class="tag">Sécurité</span>
+        </article>
+        <article class="card">
+          <h3>Éducation</h3>
+          <p>Exercices adaptés au niveau de l'élève et retours immédiats. L'enseignant garde la main sur le sens.</p>
+          <span class="tag">Personnalisation</span>
+        </article>
+        <article class="card">
+          <h3>Environnement</h3>
+          <p>Prévision de la consommation d'énergie et optimisation des réseaux. Les gains se mesurent sur la durée.</p>
+          <span class="tag">Optimisation</span>
+        </article>
+      </div>
+    </div>
+
+    <!-- 5. Avantages, limites, éthique -->
+    <div class="rv">
+      <h3 style="font-size:1.25rem">5. Avantages, limites et éthique</h3>
+      <p class="mut">Un outil puissant n'est neutre ni dans ses usages ni dans ses effets.</p>
+      <div class="grid">
+        <article class="card">
+          <h3>Ce qu'elle apporte</h3>
+          <ul class="ul">
+            <li>Traiter de grands volumes de données rapidement.</li>
+            <li>Automatiser les tâches répétitives.</li>
+            <li>Assister la décision humaine, sans la remplacer.</li>
+          </ul>
+          <span class="tag">Atouts</span>
+        </article>
+        <article class="card">
+          <h3>Ce qu'elle ne sait pas</h3>
+          <ul class="ul ko">
+            <li>Comprendre le sens comme un humain.</li>
+            <li>Garantir une réponse vraie : elle peut inventer.</li>
+            <li>Justifier clairement ses décisions internes.</li>
+          </ul>
+          <span class="tag">Limites</span>
+        </article>
+        <article class="card">
+          <h3>Questions éthiques</h3>
+          <ul class="ul">
+            <li>Biais des données et discriminations indirectes.</li>
+            <li>Protection des données personnelles.</li>
+            <li>Responsabilité en cas d'erreur de la machine.</li>
+          </ul>
+          <span class="tag">Éthique</span>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     ENCYCLOPEDIE (cartes générées par le script)
+     ============================================================ -->
+<section id="encyclopedie">
+  <div class="wrap">
+    <h2 class="rv"><span class="ln"></span>Encyclopédie</h2>
+    <p class="mut rv">Les notions essentielles, classées par thème et filtrables en un clic.</p>
+    <div class="chips rv" id="encChips" role="group" aria-label="Filtrer par thème"></div>
+    <div class="grid" id="encg"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     BIBLIOTHEQUE / REFERENCES
+     ============================================================ -->
+<section id="references">
+  <div class="wrap">
+    <h2 class="rv"><span class="ln"></span>Pour aller plus loin</h2>
+    <p class="mut rv">Une sélection de ressources pour prolonger le cours.</p>
+    <div class="grid" id="bibg"></div>
+  </div>
+</section>
+
+<!-- ============================================================
+     QUIZ
+     ============================================================ -->
+<section id="quiz">
+  <div class="wrap">
+    <h2 class="rv"><span class="ln"></span>Quiz de révision</h2>
+    <p class="mut rv">Huit questions pour vérifier ce que vous avez retenu.</p>
+    <div class="quiz rv" id="quizBox">
+      <div class="q-top">
+        <span id="qCount">Question 1 / 8</span>
+        <span id="qScoreTop">Score : 0</span>
+      </div>
+      <div class="q-bar"><i id="qBar"></i></div>
+      <p class="q-text" id="qText">Chargement…</p>
+      <div class="q-opts" id="qOpts"></div>
+      <p class="q-fb" id="qFb"></p>
+      <div class="q-foot">
+        <button class="btn btn-primary" id="qNext" type="button">Question suivante</button>
+        <button class="btn btn-ghost" id="qReset" type="button">Recommencer</button>
+        <span class="q-score" id="qScoreEnd"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     GLOSSAIRE
+     ============================================================ -->
+<section id="glossaire">
+  <div class="wrap">
+    <h2 class="rv"><span class="ln"></span>Glossaire</h2>
+    <p class="mut rv">Le vocabulaire technique, du plus simple au plus précis.</p>
+    <dl class="gl rv" id="gl"></dl>
+  </div>
+</section>
+
+<!-- ============================================================
+     ISZ AI — ASSISTANT LOCAL
+     ============================================================ -->
+<section id="iszai">
+  <div class="wrap">
+    <h2 class="rv"><span class="ln"></span>ISZ AI</h2>
+    <p class="mut rv">Un assistant local qui répond à partir du contenu du cours, sans connexion.</p>
+
+    <div class="ai rv">
+      <div class="chat">
+        <div class="chat-hd">
+          <span class="dot" aria-hidden="true"></span>
+          <b>ISZ AI</b>
+          <small>hors ligne</small>
+        </div>
+
+        <!-- Trois boutons rapides en haut du chat -->
+        <div class="quick" role="group" aria-label="Questions rapides">
+          <button type="button" data-q="C'est quoi l'IA ?">C'est quoi l'IA ?</button>
+          <button type="button" data-q="Qui est Turing ?">Qui est Turing ?</button>
+          <button type="button" data-q="Conseils de révision">Conseils de révision</button>
+        </div>
+
+        <div class="log" id="log" role="log" aria-live="polite" aria-label="Conversation"></div>
+        <div class="sugg" id="sugg"></div>
+
+        <form class="chat-in" id="chatForm" autocomplete="off">
+          <input type="text" id="chatInput" placeholder="Posez votre question…" aria-label="Votre question">
+          <button class="send" type="submit" aria-label="Envoyer">
+            <svg viewBox="0 0 24 24"><path d="M4 12l16-8-6 16-2.5-6.5L4 12z"/></svg>
+          </button>
+        </form>
+      </div>
+
+      <aside class="ai-side">
+        <div class="card">
+          <h3>Comment ça marche</h3>
+          <p>ISZ AI compare votre question à une base de fiches locales et renvoie la plus proche. Aucune donnée ne quitte l'appareil.</p>
+        </div>
+        <div class="card flat">
+          <h3>Bon à savoir</h3>
+          <p>L'assistant peut se tromper : vérifiez toujours une réponse importante dans le cours ou le glossaire.</p>
+        </div>
+        <div class="card flat">
+          <h3>Effacer la conversation</h3>
+          <p>L'historique est conservé sur cet appareil uniquement. Un bouton suffit pour le vider.</p>
+          <button class="btn btn-ghost" type="button" id="clearChat" style="margin-top:6px;align-self:flex-start;padding:9px 15px;font-size:.82rem">Vider l'historique</button>
+        </div>
+      </aside>
+    </div>
+  </div>
+</section>
+
+<!-- ============================================================
+     EQUIPE
+     ============================================================ -->
+<section id="equipe">
+  <div class="wrap">
+    <h2 class="rv"><span class="ln"></span>L'équipe</h2>
+    <p class="mut rv">Un projet réalisé au Lycée Oukraf Mohamed, sous le label ISZ.</p>
+    <div class="grid rv">
+      <!-- Remplacer les libellés par les noms réels de l'équipe si besoin -->
+      <article class="card">
+        <div class="member"><span class="avatar">ISZ</span><h3 style="min-height:0">Coordination pédagogique</h3></div>
+        <p>Choix des contenus, progression du cours et relecture scientifique.</p>
+        <span class="tag">Contenus</span>
+      </article>
+      <article class="card">
+        <div class="member"><span class="avatar">ISZ</span><h3 style="min-height:0">Développement</h3></div>
+        <p>Intégration du site, logique du quiz et moteur de l'assistant ISZ AI.</p>
+        <span class="tag">Technique</span>
+      </article>
+      <article class="card">
+        <div class="member"><span class="avatar">ISZ</span><h3 style="min-height:0">Design et accessibilité</h3></div>
+        <p>Palette, lisibilité, contrastes et confort de lecture sur mobile.</p>
+        <span class="tag">Interface</span>
+      </article>
+    </div>
+  </div>
+</section>
+</main>
+
+<!-- ============================================================
+     PIED DE PAGE
+     ============================================================ -->
+<footer>
+  <div class="f-grid">
+    <div>
+      <div class="brand" style="margin-bottom:12px">
+        <span class="logo" aria-hidden="true">ISZ</span>
+        <span><b>Lycée Oukraf Mohamed</b><span>Projet ISZ — Intelligence Artificielle</span></span>
+      </div>
+      <p style="font-size:.88rem;color:var(--muted);margin:0;max-width:38ch">Support de cours numérique, utilisable hors ligne et sans compte.</p>
+    </div>
+    <div>
+      <h4>Cours</h4>
+      <ul>
+        <li><a href="#cours">Définition</a></li>
+        <li><a href="#cours">Histoire</a></li>
+        <li><a href="#cours">Types d'IA</a></li>
+        <li><a href="#cours">Éthique</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Ressources</h4>
+      <ul>
+        <li><a href="#encyclopedie">Encyclopédie</a></li>
+        <li><a href="#quiz">Quiz</a></li>
+        <li><a href="#glossaire">Glossaire</a></li>
+        <li><a href="#iszai">ISZ AI</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="f-bottom">
+    <span>© <span id="year">2026</span> Lycée Oukraf Mohamed — Projet ISZ</span>
+    <span>Site statique, une seule page, sans bibliothèque externe.</span>
+  </div>
+</footer>
+
+<!-- Bouton retour en haut -->
+<button id="top" aria-label="Retour en haut">
+  <svg viewBox="0 0 24 24"><path d="M12 19V5M6 11l6-6 6 6"/></svg>
+</button>
+
+<!-- ============================================================
+     NAVIGATION MOBILE : 5 ICONES
+     ============================================================ -->
+<nav id="bn" aria-label="Navigation mobile">
+  <a href="#accueil" class="on">
+    <svg viewBox="0 0 24 24"><path d="M3 10.5L12 3l9 7.5V21H3z"/></svg>Accueil
+  </a>
+  <a href="#cours">
+    <svg viewBox="0 0 24 24"><path d="M4 5h7v15H4zM13 5h7v15h-7z"/></svg>Cours
+  </a>
+  <a href="#quiz">
+    <svg viewBox="0 0 24 24"><path d="M9 9a3 3 0 1 1 4.5 2.6c-.9.6-1.5 1.2-1.5 2.4"/><circle cx="12" cy="18" r="1"/></svg>Quiz
+  </a>
+  <a href="#iszai">
+    <svg viewBox="0 0 24 24"><rect x="4" y="5" width="16" height="13" rx="3"/><circle cx="9" cy="11" r="1"/><circle cx="15" cy="11" r="1"/><path d="M9 21h6"/></svg>ISZ AI
+  </a>
+  <button type="button" id="bnMenu">
+    <svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg>Menu
+  </button>
+</nav>
+
+<!-- ============================================================
+     MODE PRESENTATION
+     ============================================================ -->
+<div id="pres" role="dialog" aria-modal="true" aria-label="Mode présentation">
+  <button class="icon-btn pres-x" id="presX" aria-label="Fermer la présentation">
+    <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg>
+  </button>
+  <div class="pres-in">
+    <div id="presBody"></div>
+    <div class="pres-bar">
+      <button class="btn btn-ghost" id="presPrev" type="button">Précédent</button>
+      <button class="btn btn-primary" id="presNext" type="button">Suivant</button>
+      <span id="presCount"></span>
+    </div>
+  </div>
+</div>
+
+<script src="data.js"></script>
+<script src="kb.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
