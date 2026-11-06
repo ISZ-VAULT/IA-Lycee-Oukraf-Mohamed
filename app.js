@@ -243,3 +243,75 @@ function initRipple(){
     setTimeout(() => s.remove(), 620);
   });
 }
+
+/* ============================================================
+   THEME CLAIR / SOMBRE
+   ============================================================ */
+function initTheme(){
+  const html = document.documentElement;
+  const saved = localStorage.getItem("isz-theme");
+  if(saved === "light" || saved === "dark") html.dataset.theme = saved;
+
+  const icon = $("#tIcon");
+  const paint = () => {
+    // L'icône devient un soleil en thème sombre, une lune en thème clair.
+    if(html.dataset.theme === "light"){
+      icon.innerHTML = '<path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6L17 7M7 17l-1.4 1.4"/><circle cx="12" cy="12" r="4"/>';
+    }else{
+      icon.innerHTML = '<path d="M21 12.8A8.5 8.5 0 1 1 11.2 3a6.6 6.6 0 0 0 9.8 9.8z"/>';
+    }
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if(meta) meta.setAttribute("content", html.dataset.theme === "light" ? "#F4F7FB" : "#0B132B");
+  };
+  paint();
+
+  $("#tBtn").addEventListener("click", () => {
+    html.dataset.theme = html.dataset.theme === "light" ? "dark" : "light";
+    localStorage.setItem("isz-theme", html.dataset.theme);
+    paint();
+  });
+}
+
+/* ============================================================
+   NAVIGATION : MENU MOBILE, LIEN ACTIF, RETOUR EN HAUT
+   ============================================================ */
+function initNav(){
+  const nav = $("#nav");
+  const burger = $("#burger");
+
+  const closeMenu = () => {
+    nav.classList.remove("open");
+    burger.setAttribute("aria-expanded", "false");
+  };
+  burger.addEventListener("click", () => {
+    const open = nav.classList.toggle("open");
+    burger.setAttribute("aria-expanded", String(open));
+  });
+  $("#bnMenu").addEventListener("click", () => {
+    burger.click();
+  });
+  nav.addEventListener("click", e => {
+    if(e.target.tagName === "A") closeMenu();
+  });
+
+  // Lien actif selon la section visible
+  const sections = $$("main section[id]");
+  const setActive = id => {
+    $$("#nav a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + id));
+    $$("#bn a").forEach(a => a.classList.toggle("on", a.getAttribute("href") === "#" + id));
+  };
+  if("IntersectionObserver" in window){
+    const o = new IntersectionObserver(es => {
+      es.forEach(e => { if(e.isIntersecting) setActive(e.target.id); });
+    }, {rootMargin: "-45% 0px -50% 0px"});
+    sections.forEach(s => o.observe(s));
+  }
+
+  const top = $("#top");
+  top.addEventListener("click", () => window.scrollTo({top: 0, behavior: "smooth"}));
+  window.addEventListener("scroll", () => {
+    top.classList.toggle("show", window.scrollY > 600);
+  }, {passive: true});
+
+  $("#year").textContent = new Date().getFullYear();
+}
