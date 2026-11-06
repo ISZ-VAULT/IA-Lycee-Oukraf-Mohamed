@@ -315,3 +315,298 @@ function initNav(){
 
   $("#year").textContent = new Date().getFullYear();
 }
+
+/* ============================================================
+   RECHERCHE GLOBALE
+   ============================================================ */
+function initSearch(){
+  const wrap = $("#sWrap");
+  const input = $("#sInput");
+  const out = $("#sResults");
+  const btn = $("#sBtn");
+
+  // Index construit à partir des titres et des textes de la page.
+  const index = [];
+  $$("main section[id]").forEach(sec => {
+    const secTitle = (sec.querySelector("h2")?.textContent || sec.id).trim();
+    sec.querySelectorAll("h3, .gl-item dt").forEach(h => {
+      const card = h.closest(".card, .gl-item");
+      const txt = card ? card.textContent.replace(/\s+/g, " ").trim() : h.textContent;
+      index.push({sec: sec.id, title: h.textContent.trim(), text: txt, sub: secTitle});
+    });
+    sec.querySelectorAll(".tl li").forEach(li => {
+      index.push({
+        sec: sec.id,
+        title: li.querySelector(".yr")?.textContent || "Date clé",
+        text: li.textContent.replace(/\s+/g, " ").trim(),
+        sub: secTitle
+      });
+    });
+  });
+
+  const toggle = force => {
+    const open = typeof force === "boolean" ? force : !wrap.classList.contains("open");
+    wrap.classList.toggle("open", open);
+    btn.setAttribute("aria-expanded", String(open));
+    if(open){ input.focus(); }
+    else { input.value = ""; out.innerHTML = ""; }
+  };
+  btn.addEventListener("click", () => toggle());
+
+  const render = q => {
+    const nq = norm(q);
+    if(nq.length < 2){ out.innerHTML = '<li class="s-empty">Tapez au moins deux lettres.</li>'; return; }
+    const hits = index
+      .map(it => ({...it, hit: norm(it.text).includes(nq) || norm(it.title).includes(nq)}))
+      .filter(it => it.hit)
+      .slice(0, 9);
+
+    if(!hits.length){
+      out.innerHTML = '<li class="s-empty">Aucun résultat. Essayez « biais », « Turing » ou « RGPD ».</li>';
+      return;
+    }
+    out.innerHTML = hits.map(it => {
+      const cut = it.text.length > 96 ? it.text.slice(0, 96).trim() + "…" : it.text;
+      return `<li><a href="#${esc(it.sec)}" data-close="1"><b>${esc(it.title)}</b><small>${esc(it.sub)} — ${esc(cut)}</small></a></li>`;
+    }).join("");
+    $$("#sResults a").forEach(a => a.addEventListener("click", () => toggle(false)));
+  };
+
+  input.addEventListener("input", () => render(input.value));
+  document.addEventListener("keydown", e => {
+    if(e.key === "Escape" && wrap.classList.contains("open")) toggle(false);
+    // Raccourci « / » pour ouvrir la recherche
+    if(e.key === "/" && !wrap.classList.contains("open") && document.activeElement.tagName !== "INPUT"){
+      e.preventDefault(); toggle(true);
+    }
+  });
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+function initQuiz(){
+  let i = 0, score = 0, locked = false, done = false;
+  const qText = $("#qText"), qOpts = $("#qOpts"), qFb = $("#qFb");
+  const qCount = $("#qCount"), qScoreTop = $("#qScoreTop"), qBar = $("#qBar");
+  const next = $("#qNext");
+
+  const paint = () => {
+    locked = false; done = false;
+    const q = QUIZ[i];
+    qText.textContent = q.q;
+    qFb.textContent = "";
+    qCount.textContent = `Question ${i + 1} / ${QUIZ.length}`;
+    qScoreTop.textContent = `Score : ${score}`;
+    qBar.style.width = ((i) / QUIZ.length * 100) + "%";
+    next.textContent = i === QUIZ.length - 1 ? "Voir le résultat" : "Question suivante";
+    next.disabled = false;
+
+    qOpts.innerHTML = "";
+    q.o.forEach((txt, idx) => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.className = "q-opt";
+      b.textContent = txt;
+      b.addEventListener("click", () => pick(idx, b));
+      qOpts.appendChild(b);
+    });
+  };
+
+  const pick = (idx, btn) => {
+    if(locked) return;
+    locked = true;
+    const q = QUIZ[i];
+    const opts = $$(".q-opt", qOpts);
+    opts.forEach((b, k) => {
+      b.disabled = true;
+      if(k === q.a) b.classList.add("good");
+    });
+    if(idx === q.a){
+      score++;
+      qFb.textContent = "Bonne réponse. " + q.e;
+    }else{
+      btn.classList.add("bad");
+      qFb.textContent = "Réponse incorrecte. " + q.e;
+    }
+    qScoreTop.textContent = `Score : ${score}`;
+  };
+
+  next.addEventListener("click", () => {
+    if(done) return;
+    if(i < QUIZ.length - 1){ i++; paint(); return; }
+    // Fin du quiz : on affiche le bilan
+    done = true;
+    qBar.style.width = "100%";
+    qCount.textContent = "Terminé";
+    $("#qScoreEnd").textContent = `Résultat : ${score} / ${QUIZ.length}`;
+    qText.textContent = score >= 6 ? "Très bon niveau : le chapitre est acquis." : "À consolider : relisez le cours puis recommencez.";
+    qOpts.innerHTML = "";
+    qFb.textContent = score >= 6
+      ? "Vous maîtrisez les notions principales."
+      : "Concentrez-vous sur la chronologie et sur la différence entre hallucination et biais.";
+    next.disabled = true;
+  });
+
+  $("#qReset").addEventListener("click", () => {
+    i = 0; score = 0; done = false;
+    $("#qScoreEnd").textContent = "";
+    paint();
+  });
+
+  paint();
+}
+
+/* ============================================================
+   ISZ AI : CONVERSATION
+   ============================================================ */
+function initChat(){
+  const log = $("#log"), form = $("#chatForm"), input = $("#chatInput"), sugg = $("#sugg");
+  const KEY = "isz-chat-history";
+  let history = [];
+
+  const addMsg = (who, text, save = true) => {
+    const d = document.createElement("div");
+    d.className = "msg " + (who === "me" ? "me" : "bot");
+    d.textContent = text;
+    if(who === "bot"){
+      const meta = document.createElement("span");
+      meta.className = "meta";
+      meta.textContent = "ISZ AI — réponse locale";
+      d.appendChild(meta);
+    }
+    log.appendChild(d);
+    log.scrollTop = log.scrollHeight;
+    if(save){ history.push({who, text}); persist(); }
+  };
+
+  const persist = () => {
+    try{ localStorage.setItem(KEY, JSON.stringify(history.slice(-40))); }catch(e){}
+  };
+
+  const suggestions = ["C'est quoi le machine learning ?", "Explique le biais", "Comment réviser ?"];
+  const paintSugg = () => {
+    sugg.innerHTML = "";
+    suggestions.forEach(s => {
+      const b = document.createElement("button");
+      b.type = "button";
+      b.textContent = s;
+      b.addEventListener("click", () => send(s));
+      sugg.appendChild(b);
+    });
+  };
+
+  let busy = false;
+  const send = q => {
+    const text = String(q || "").trim();
+    if(!text || busy) return;
+    addMsg("me", text);
+    input.value = "";
+    busy = true;
+
+    const bubble = document.createElement("div");
+    bubble.className = "msg bot typing";
+    bubble.textContent = "ISZ AI réfléchit";
+    log.appendChild(bubble);
+    log.scrollTop = log.scrollHeight;
+
+    setTimeout(() => {
+      const res = answer(text);
+      bubble.remove();
+      addMsg("bot", res.text);
+      busy = false;
+    }, 420);
+  };
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    send(input.value);
+  });
+
+  // Les 3 boutons rapides en haut du chat
+  $$(".quick button").forEach(b => {
+    b.addEventListener("click", () => send(b.dataset.q));
+  });
+
+  $("#clearChat").addEventListener("click", () => {
+    history = [];
+    try{ localStorage.removeItem(KEY); }catch(e){}
+    log.innerHTML = "";
+    addMsg("bot", "Historique effacé. Posez une nouvelle question quand vous voulez.", false);
+  });
+
+  // Restauration de la conversation précédente
+  let restored = false;
+  try{ restored = JSON.parse(localStorage.getItem(KEY) || "[]"); }catch(e){ restored = []; }
+  if(Array.isArray(restored) && restored.length){
+    restored.forEach(m => {
+      const d = document.createElement("div");
+      d.className = "msg " + (m.who === "me" ? "me" : "bot");
+      d.textContent = m.text;
+      log.appendChild(d);
+    });
+    history = restored;
+  }else{
+    addMsg("bot", "Bonjour ! Je suis ISZ AI, l'assistant de ce cours.\n\nPosez-moi une question sur l'intelligence artificielle, ou utilisez l'un des trois boutons ci-dessus.", false);
+  }
+  paintSugg();
+}
+
+/* ============================================================
+   MODE PRESENTATION
+   ============================================================ */
+function initPres(){
+  const box = $("#pres"), body = $("#presBody"), count = $("#presCount");
+  const slides = [
+    {t:"L'intelligence artificielle", b:"Des techniques qui permettent à une machine de percevoir, raisonner, apprendre et décider.<ul><li>IA faible : spécialisée, disponible aujourd'hui.</li><li>IA forte : hypothétique, non réalisée.</li></ul>"},
+    {t:"Repères historiques", b:"<ul><li>1950 : test de Turing.</li><li>1956 : conférence de Dartmouth.</li><li>1997 : Deep Blue bat Kasparov.</li><li>2012 : deep learning en reconnaissance d'images.</li><li>2022 : essor de l'IA générative.</li></ul>"},
+    {t:"Comment ça apprend", b:"<ul><li>Supervisé : exemples étiquetés.</li><li>Non supervisé : regroupements sans étiquettes.</li><li>Renforcement : récompense et pénalité.</li></ul>"},
+    {t:"Limites à connaître", b:"<ul><li>Hallucinations : réponses fausses mais assurées.</li><li>Biais : déséquilibres hérités des données.</li><li>Boîte noire : décisions difficiles à expliquer.</li></ul>"},
+    {t:"Enjeux éthiques", b:"<ul><li>Protection des données personnelles (RGPD).</li><li>Responsabilité en cas d'erreur.</li><li>Empreinte énergétique des grands modèles.</li></ul>"}
+  ];
+  let k = 0;
+
+  const paint = () => {
+    body.innerHTML = `<h3>${slides[k].t}</h3><div class="slide-body">${slides[k].b}</div>`;
+    count.textContent = `${k + 1} / ${slides.length}`;
+    $("#presPrev").disabled = k === 0;
+    $("#presNext").textContent = k === slides.length - 1 ? "Terminer" : "Suivant";
+  };
+  const open = () => { k = 0; box.classList.add("on"); document.body.style.overflow = "hidden"; paint(); };
+  const close = () => { box.classList.remove("on"); document.body.style.overflow = ""; };
+
+  $("#pBtn").addEventListener("click", open);
+  $("#presX").addEventListener("click", close);
+  $("#presPrev").addEventListener("click", () => { if(k > 0){ k--; paint(); } });
+  $("#presNext").addEventListener("click", () => {
+    if(k < slides.length - 1){ k++; paint(); } else close();
+  });
+  document.addEventListener("keydown", e => {
+    if(!box.classList.contains("on")) return;
+    if(e.key === "Escape") close();
+    if(e.key === "ArrowRight" && k < slides.length - 1){ k++; paint(); }
+    if(e.key === "ArrowLeft" && k > 0){ k--; paint(); }
+  });
+}
+
+/* ============================================================
+   INITIALISATION
+   ============================================================ */
+document.addEventListener("DOMContentLoaded", () => {
+  renderChips();
+  renderEnc();
+  renderBib();
+  renderGloss();
+  initTheme();
+  initNav();
+  initSearch();
+  initQuiz();
+  initChat();
+  initPres();
+  initCounters();
+  initTyped();
+  initParticles();
+  initRipple();
+  observeAll();
+  revealFallback();
+});
